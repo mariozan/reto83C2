@@ -14,7 +14,7 @@ public class Conn {
     String driver = "com.mysql.jdbc.Driver";
     String user = "root";
     String password = "";
-    String url = "jdbc:mysql://localhost:3306/misiontic";
+    String url = "jdbc:mysql://localhost:3306/misiontic83";
     Connection conexion;
 
     public Connection getConnection() {

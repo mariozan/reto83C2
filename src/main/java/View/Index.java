@@ -5,6 +5,7 @@
 package View;
 
 import Class.*;
+import Model.UsuarioModel;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,7 @@ public class Index extends javax.swing.JFrame {
     /**
      * Creates new form Index
      */
+    UsuarioModel modelo_usuario = new UsuarioModel();
     ArrayList<Usuario> listaUsuarios = new ArrayList();
 
     public Index() {
@@ -324,6 +326,7 @@ public class Index extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
             Usuario new_user = new Usuario(id, nombre, apellidos, direccion, telefono);
+            modelo_usuario.Create(new_user);
             listaUsuarios.add(new_user);
             JOptionPane.showMessageDialog(this, "Usuario " + nombre + " fue creado correctamente");
             cargarListaTablaUsuarios();
@@ -372,6 +375,7 @@ public class Index extends javax.swing.JFrame {
                 listaUsuarios.remove(listaUsuarios.get(i));
                 JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente");
                 existe = true;
+                modelo_usuario.Delete(id);
                 cargarListaTablaUsuarios();
                 limpiarCamposUsuario();
                 break;
