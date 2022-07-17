@@ -7,6 +7,7 @@ package Model;
 import Class.Usuario;
 import Controller.Conn;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,15 +26,61 @@ public class UsuarioModel {
             statment.setString(2, user.getApellidos());
             statment.setString(3, user.getDireccion());
             statment.setString(4, user.getTelefono());
-            int result = statment.executeUpdate();
-            if (result > 0) {
-                return 1; // Todo salio bien
+            statment.executeUpdate();
+            ResultSet generatedKey = statment.getGeneratedKeys();
+            if (generatedKey.next()) {
+                return generatedKey.getInt(1); // Todo salio bien
             }
         }catch (Exception e) {
             System.out.println("Error" + e.getMessage());
         }        
         return 0; // Algo salio mal
     }
+    
+    public ArrayList<Usuario> Read() {
+        Connection conn = conexion.getConnection();
+        ArrayList<Usuario> lista_usuarios = new ArrayList();
+        String query = "SELECT * FROM usuario;";
+        try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            ResultSet resultados = newStatement.executeQuery();
+            while (resultados.next()) {
+                int id = resultados.getInt(1);
+                String nombre = resultados.getString(2);
+                String apellidos = resultados.getString(3);
+                String direccion = resultados.getString(4);
+                String telefono = resultados.getString(5);   
+                Usuario u = new Usuario(id, nombre, apellidos, direccion, telefono);
+                lista_usuarios.add(u);
+            }
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return lista_usuarios;
+    }
+    
+    public int Update(Usuario u, int id) {
+        Connection conn = conexion.getConnection();
+        String query = "UPDATE usuario "
+                + "SET nombre = ?, "
+                + "apellidos = ?, "
+                + "direccion = ?, "
+                + "telefono = ? "
+                + "WHERE id = ?";       
+         try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            newStatement.setString(1, u.getNombre());
+            newStatement.setString(2, u.getApellidos());
+            newStatement.setString(3, u.getDireccion());
+            newStatement.setString(4, u.getTelefono());
+            newStatement.setInt(5, id);
+            newStatement.executeUpdate();
+            return 1;
+        } catch (Exception exp) {
+            System.out.println("Error: " + exp.getMessage());
+        }
+        return 0;
+    }    
     
     public int Delete(int id) {
         Connection conn = conexion.getConnection();

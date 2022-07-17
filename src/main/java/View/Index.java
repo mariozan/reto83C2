@@ -20,10 +20,12 @@ public class Index extends javax.swing.JFrame {
      * Creates new form Index
      */
     UsuarioModel modelo_usuario = new UsuarioModel();
-    ArrayList<Usuario> listaUsuarios = new ArrayList();
+    ArrayList<Usuario> listaUsuarios = modelo_usuario.Read(); // aqui
 
     public Index() {
         initComponents();
+        cargarListaTablaUsuarios(); // aqui
+        cargarComboOrigen();
     }
     
     public void cargarListaTablaUsuarios() {
@@ -40,7 +42,23 @@ public class Index extends javax.swing.JFrame {
             tab.addRow(datos);
         }
         tableUsuarios.setModel(tab);
+        
+        cargarComboOrigen();
     }
+    
+    public void cargarComboOrigen() {
+        comboOrigen.removeAllItems();
+        comboOrigen.addItem("");
+        comboDestino.removeAllItems();
+        comboDestino.addItem("");
+        for (Usuario usuario : listaUsuarios) {
+            comboOrigen.addItem(usuario.getId() + "-" + usuario.getNombre() + " "+ usuario.getApellidos());
+            comboDestino.addItem(usuario.getId() + "-" + usuario.getNombre() + " "+ usuario.getApellidos());
+        }
+        comboOrigen.setSelectedIndex(0);
+        comboDestino.setSelectedIndex(0);
+    }
+
     
     public void limpiarCamposUsuario(){
         txtIdUsuario.setValue(0);
@@ -69,6 +87,15 @@ public class Index extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jSpinner1 = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        comboOrigen = new javax.swing.JComboBox<>();
+        comboDestino = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -158,15 +185,66 @@ public class Index extends javax.swing.JFrame {
 
         TabbedPane.addTab("ListarServicios", jPanel5);
 
+        jLabel6.setText("id");
+
+        jLabel7.setText("origen");
+
+        jLabel8.setText("destino");
+
+        jLabel9.setText("encomienda");
+
+        jLabel10.setText("fecha");
+
+        jLabel11.setText("hora");
+
+        comboOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        comboDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 474, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel9)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addGap(40, 40, 40)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jSpinner1)
+                            .addComponent(comboOrigen, 0, 137, Short.MAX_VALUE)
+                            .addComponent(comboDestino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(211, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(comboOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(comboDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(45, 45, 45)
+                .addComponent(jLabel9)
+                .addGap(40, 40, 40)
+                .addComponent(jLabel10)
+                .addGap(49, 49, 49)
+                .addComponent(jLabel11)
+                .addContainerGap(112, Short.MAX_VALUE))
         );
 
         TabbedPane.addTab("Servicio", jPanel6);
@@ -326,7 +404,8 @@ public class Index extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
             Usuario new_user = new Usuario(id, nombre, apellidos, direccion, telefono);
-            modelo_usuario.Create(new_user);
+            int result = modelo_usuario.Create(new_user);
+            new_user.setId(result);
             listaUsuarios.add(new_user);
             JOptionPane.showMessageDialog(this, "Usuario " + nombre + " fue creado correctamente");
             cargarListaTablaUsuarios();
@@ -353,6 +432,8 @@ public class Index extends javax.swing.JFrame {
                     listaUsuarios.get(i).setDireccion(direccion);
                     listaUsuarios.get(i).setTelefono(telefono);
                     existe = true;
+                    Usuario u = new Usuario(id, nombre, apellidos, direccion, telefono);
+                    modelo_usuario.Update(u, id);
                     cargarListaTablaUsuarios();
                     limpiarCamposUsuario();
                     JOptionPane.showMessageDialog(this, "Usuario editado correctamente");
@@ -372,12 +453,16 @@ public class Index extends javax.swing.JFrame {
         boolean existe = false;
         for (int i = 0; i < listaUsuarios.size(); i++) {
             if (listaUsuarios.get(i).getId() == id) {
-                listaUsuarios.remove(listaUsuarios.get(i));
-                JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente");
+                int resultado = modelo_usuario.Delete(id);
+                if(resultado == 1){
+                    listaUsuarios.remove(listaUsuarios.get(i));
+                    JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente");
+                    cargarListaTablaUsuarios();
+                    limpiarCamposUsuario();
+                }else{
+                    JOptionPane.showMessageDialog(this, "Usuario no puede ser eliminado");
+                }
                 existe = true;
-                modelo_usuario.Delete(id);
-                cargarListaTablaUsuarios();
-                limpiarCamposUsuario();
                 break;
             }
         }
@@ -428,11 +513,19 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JButton btnEditarUsuario;
     private javax.swing.JButton btnEliminarUsuario;
     private javax.swing.JButton btnGuardarUsuario;
+    private javax.swing.JComboBox<String> comboDestino;
+    private javax.swing.JComboBox<String> comboOrigen;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -441,6 +534,7 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTable tableUsuarios;
     private javax.swing.JTextField txtApellidosUsuario;
     private javax.swing.JTextField txtDireccionUsuario;
