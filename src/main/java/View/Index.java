@@ -5,6 +5,8 @@
 package View;
 
 import Class.*;
+import Model.EncomiendaModel;
+import Model.ServicioModel;
 import Model.UsuarioModel;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -20,12 +22,20 @@ public class Index extends javax.swing.JFrame {
      * Creates new form Index
      */
     UsuarioModel modelo_usuario = new UsuarioModel();
-    ArrayList<Usuario> listaUsuarios = modelo_usuario.Read(); // aqui
+    EncomiendaModel modelo_encomienda = new EncomiendaModel();
+    ServicioModel modelo_servicio = new ServicioModel();
+
+    ArrayList<Usuario> listaUsuarios = modelo_usuario.Read();
+    ArrayList<Encomienda> listaEncomiendas = modelo_encomienda.Read();
+    ArrayList<Servicio> listaServicio = new ArrayList<Servicio>();
+
 
     public Index() {
         initComponents();
-        cargarListaTablaUsuarios(); // aqui
+        cargarListaTablaUsuarios();
+        cargarListaTablaEncomienda();
         cargarComboOrigen();
+        cargarComboEncomienda();
     }
     
     public void cargarListaTablaUsuarios() {
@@ -46,6 +56,22 @@ public class Index extends javax.swing.JFrame {
         cargarComboOrigen();
     }
     
+    public void cargarListaTablaEncomienda() {
+        DefaultTableModel tab = new DefaultTableModel();
+        String[] cabecera = {"Id", "Descripcion", "Peso", "Tipo", "Presentacion"};
+        Object[] datos = new Object[cabecera.length];
+        tab.setColumnIdentifiers(cabecera);
+        for (int i = 0; i < listaEncomiendas.size(); i++) {
+            datos[0] = listaEncomiendas.get(i).getId();
+            datos[1] = listaEncomiendas.get(i).getDescripcion();
+            datos[2] = listaEncomiendas.get(i).getPeso();
+            datos[3] = listaEncomiendas.get(i).getTipo();
+            datos[4] = listaEncomiendas.get(i).getPresentacion();
+            tab.addRow(datos);
+        }
+        tableEncomiendas.setModel(tab);
+        }
+    
     public void cargarComboOrigen() {
         comboOrigen.removeAllItems();
         comboOrigen.addItem("");
@@ -58,6 +84,14 @@ public class Index extends javax.swing.JFrame {
         comboOrigen.setSelectedIndex(0);
         comboDestino.setSelectedIndex(0);
     }
+    
+    public void cargarComboEncomienda(){
+        comboEncomienda.removeAllItems();
+        comboEncomienda.addItem("");
+        for (Encomienda encomienda : listaEncomiendas) {
+            comboEncomienda.addItem(encomienda.getId() + "-" + encomienda.getDescripcion());
+        }
+    }
 
     
     public void limpiarCamposUsuario(){
@@ -66,6 +100,14 @@ public class Index extends javax.swing.JFrame {
         txtApellidosUsuario.setText("");
         txtDireccionUsuario.setText("");
         txtTelefonoUsuario.setText("");
+    }
+    
+    public void limpiarCamposEncomiendas(){
+        txtIdEncomiendas.setValue(0);
+        txtDescripcionEncomiendas.setText("");
+        txtPesoEncomiendas.setValue(0);
+        txtTipoEncomiendas.setText("");
+        comboPresentacionEncomiendas.setSelectedItem(0);
     }
 
 
@@ -84,11 +126,28 @@ public class Index extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tableUsuarios = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableEncomiendas = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        txtIdEncomiendas = new javax.swing.JSpinner();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescripcionEncomiendas = new javax.swing.JTextArea();
+        txtPesoEncomiendas = new javax.swing.JSpinner();
+        txtTipoEncomiendas = new javax.swing.JTextField();
+        btnGuadarEncomienda = new javax.swing.JButton();
+        btnEditarEncomienda = new javax.swing.JButton();
+        btnEliminarEncomienda = new javax.swing.JButton();
+        btnBuscarEncomienda = new javax.swing.JButton();
+        comboPresentacionEncomiendas = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        txtIdServicio = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -96,6 +155,13 @@ public class Index extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         comboOrigen = new javax.swing.JComboBox<>();
         comboDestino = new javax.swing.JComboBox<>();
+        comboEncomienda = new javax.swing.JComboBox<>();
+        txtFechaServicio = new javax.swing.JFormattedTextField();
+        btnGuardarServicio = new javax.swing.JButton();
+        btnEditarServicio = new javax.swing.JButton();
+        btnBuscarServicio = new javax.swing.JButton();
+        btnEliminarServicio = new javax.swing.JButton();
+        txtHoraServicio = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -146,28 +212,130 @@ public class Index extends javax.swing.JFrame {
 
         TabbedPane.addTab("ListarUsuarios", jPanel1);
 
+        tableEncomiendas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tableEncomiendas);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 474, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 22, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         TabbedPane.addTab("ListarEncomiendas", jPanel3);
+
+        jLabel12.setText("id");
+
+        jLabel13.setText("descripcion");
+
+        jLabel14.setText("peso");
+
+        jLabel15.setText("tipo");
+
+        jLabel16.setText("presentacion");
+
+        txtDescripcionEncomiendas.setColumns(20);
+        txtDescripcionEncomiendas.setRows(5);
+        jScrollPane1.setViewportView(txtDescripcionEncomiendas);
+
+        btnGuadarEncomienda.setText("Guardar");
+        btnGuadarEncomienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuadarEncomiendaActionPerformed(evt);
+            }
+        });
+
+        btnEditarEncomienda.setText("Editar");
+
+        btnEliminarEncomienda.setText("Eliminar");
+
+        btnBuscarEncomienda.setText("Buscar");
+
+        comboPresentacionEncomiendas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bolsa", "Caja", "Sobre" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 474, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel16)
+                    .addComponent(btnGuadarEncomienda))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addComponent(btnEditarEncomienda)
+                        .addGap(33, 33, 33)
+                        .addComponent(btnEliminarEncomienda)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addComponent(btnBuscarEncomienda)
+                        .addGap(30, 30, 30))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1)
+                            .addComponent(txtIdEncomiendas)
+                            .addComponent(txtPesoEncomiendas)
+                            .addComponent(txtTipoEncomiendas)
+                            .addComponent(comboPresentacionEncomiendas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(txtIdEncomiendas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
+                        .addComponent(jLabel13)
+                        .addGap(62, 62, 62))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(txtPesoEncomiendas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(txtTipoEncomiendas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(57, 57, 57)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(comboPresentacionEncomiendas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuadarEncomienda)
+                    .addComponent(btnEditarEncomienda)
+                    .addComponent(btnEliminarEncomienda)
+                    .addComponent(btnBuscarEncomienda))
+                .addGap(23, 23, 23))
         );
 
         TabbedPane.addTab("Encomiendas", jPanel4);
@@ -201,6 +369,23 @@ public class Index extends javax.swing.JFrame {
 
         comboDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        comboEncomienda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        txtFechaServicio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("y/MM/d"))));
+
+        btnGuardarServicio.setText("Guardar");
+        btnGuardarServicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarServicioActionPerformed(evt);
+            }
+        });
+
+        btnEditarServicio.setText("Editar");
+
+        btnBuscarServicio.setText("Buscar");
+
+        btnEliminarServicio.setText("Eliminar");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -208,43 +393,83 @@ public class Index extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(47, 47, 47)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel9)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
                             .addComponent(jLabel8))
-                        .addGap(40, 40, 40)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                                .addGap(45, 45, 45)
+                                .addComponent(comboDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(comboOrigen, 0, 148, Short.MAX_VALUE)
+                                    .addComponent(txtIdServicio)))))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSpinner1)
-                            .addComponent(comboOrigen, 0, 137, Short.MAX_VALUE)
-                            .addComponent(comboDestino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(211, Short.MAX_VALUE))
+                            .addComponent(comboEncomienda, 0, 148, Short.MAX_VALUE)
+                            .addComponent(txtFechaServicio)
+                            .addComponent(txtHoraServicio))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnGuardarServicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEliminarServicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEditarServicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBuscarServicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(48, 48, 48))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(txtIdServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addComponent(btnGuardarServicio)))
+                .addGap(8, 8, 8)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(comboOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(comboDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(btnEditarServicio)))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(comboEncomienda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(btnBuscarServicio)))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtFechaServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEliminarServicio)))
                 .addGap(38, 38, 38)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(comboDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addComponent(jLabel9)
-                .addGap(40, 40, 40)
-                .addComponent(jLabel10)
-                .addGap(49, 49, 49)
-                .addComponent(jLabel11)
-                .addContainerGap(112, Short.MAX_VALUE))
+                    .addComponent(jLabel11)
+                    .addComponent(txtHoraServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         TabbedPane.addTab("Servicio", jPanel6);
@@ -472,6 +697,60 @@ public class Index extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnEliminarUsuarioActionPerformed
 
+    private void btnGuadarEncomiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuadarEncomiendaActionPerformed
+        // TODO add your handling code here:
+        int id = (int) txtIdEncomiendas.getValue(); // Spinner
+        String descripcion = txtDescripcionEncomiendas.getText(); // TextField
+        int peso = (int) txtPesoEncomiendas.getValue();
+        String tipo = txtTipoEncomiendas.getText();
+        String presentacion = comboPresentacionEncomiendas.getSelectedItem().toString();
+        
+        if (descripcion.equals("") || peso == 0 || tipo.equals("") || presentacion.equals("")) {
+            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+        } else {
+            Encomienda enc = new Encomienda(id, descripcion, peso, presentacion, tipo);
+            int result = modelo_encomienda.Create(enc);
+            enc.setId(result);
+            listaEncomiendas.add(enc);
+            JOptionPane.showMessageDialog(this, "Encomienda " + descripcion + " fue creado correctamente");
+            cargarListaTablaEncomienda();
+            limpiarCamposEncomiendas();
+        }
+    }//GEN-LAST:event_btnGuadarEncomiendaActionPerformed
+
+    private void btnGuardarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarServicioActionPerformed
+        // TODO add your handling code here:
+        
+        int id = (int) txtIdServicio.getValue(); // Spinner
+        String origen = comboOrigen.getSelectedItem().toString();
+        String[] partes_origen = origen.split("-");
+        int id_origen = Integer.parseInt(partes_origen[0]);
+        
+        String destino = comboDestino.getSelectedItem().toString();
+        String[] partes_destino = origen.split("-");
+        int id_destino = Integer.parseInt(partes_destino[0]);
+        
+        String encomienda = comboEncomienda.getSelectedItem().toString();
+        String[] partes_encomienda = origen.split("-");
+        int id_encomienda = Integer.parseInt(partes_encomienda[0]);
+        
+        String fecha = txtFechaServicio.getText();
+        String hora = txtHoraServicio.getText();
+        
+        if (origen.equals("") || destino.equals("") || encomienda.equals("") 
+                || fecha.equals("") || hora.equals("")) {
+            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+        } else {
+            Servicio new_serv = new Servicio(id, id_origen, id_destino, fecha, hora, id_encomienda);
+            int result = modelo_servicio.Create(new_serv);
+            new_serv.setId(result);
+            listaServicio.add(new_serv);
+            JOptionPane.showMessageDialog(this, "Servicio " + fecha + " fue creado correctamente");
+//            cargarListaTablaUsuarios();
+//            limpiarCamposUsuario();
+        }
+    }//GEN-LAST:event_btnGuardarServicioActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -509,15 +788,30 @@ public class Index extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane TabbedPane;
+    private javax.swing.JButton btnBuscarEncomienda;
+    private javax.swing.JButton btnBuscarServicio;
     private javax.swing.JButton btnBuscarUsuario;
+    private javax.swing.JButton btnEditarEncomienda;
+    private javax.swing.JButton btnEditarServicio;
     private javax.swing.JButton btnEditarUsuario;
+    private javax.swing.JButton btnEliminarEncomienda;
+    private javax.swing.JButton btnEliminarServicio;
     private javax.swing.JButton btnEliminarUsuario;
+    private javax.swing.JButton btnGuadarEncomienda;
+    private javax.swing.JButton btnGuardarServicio;
     private javax.swing.JButton btnGuardarUsuario;
     private javax.swing.JComboBox<String> comboDestino;
+    private javax.swing.JComboBox<String> comboEncomienda;
     private javax.swing.JComboBox<String> comboOrigen;
+    private javax.swing.JComboBox<String> comboPresentacionEncomiendas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -533,13 +827,22 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollBar jScrollBar1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable tableEncomiendas;
     private javax.swing.JTable tableUsuarios;
     private javax.swing.JTextField txtApellidosUsuario;
+    private javax.swing.JTextArea txtDescripcionEncomiendas;
     private javax.swing.JTextField txtDireccionUsuario;
+    private javax.swing.JFormattedTextField txtFechaServicio;
+    private javax.swing.JTextField txtHoraServicio;
+    private javax.swing.JSpinner txtIdEncomiendas;
+    private javax.swing.JSpinner txtIdServicio;
     private javax.swing.JSpinner txtIdUsuario;
     private javax.swing.JTextField txtNombreUsuario;
+    private javax.swing.JSpinner txtPesoEncomiendas;
     private javax.swing.JTextField txtTelefonoUsuario;
+    private javax.swing.JTextField txtTipoEncomiendas;
     // End of variables declaration//GEN-END:variables
 }
