@@ -27,7 +27,7 @@ public class Index extends javax.swing.JFrame {
 
     ArrayList<Usuario> listaUsuarios = modelo_usuario.Read();
     ArrayList<Encomienda> listaEncomiendas = modelo_encomienda.Read();
-    ArrayList<Servicio> listaServicio = new ArrayList<Servicio>();
+    ArrayList<Servicio> listaServicio = modelo_servicio.Read();
 
 
     public Index() {
@@ -36,6 +36,7 @@ public class Index extends javax.swing.JFrame {
         cargarListaTablaEncomienda();
         cargarComboOrigen();
         cargarComboEncomienda();
+        cargarListaTablaServicio();
     }
     
     public void cargarListaTablaUsuarios() {
@@ -71,6 +72,23 @@ public class Index extends javax.swing.JFrame {
         }
         tableEncomiendas.setModel(tab);
         }
+    
+    public void cargarListaTablaServicio() {
+        DefaultTableModel tab = new DefaultTableModel();
+        String[] cabecera = {"Id", "Fecha", "Hora", "Origen", "Destino", "Encomienda"};
+        Object[] datos = new Object[cabecera.length];
+        tab.setColumnIdentifiers(cabecera);
+        for (int i = 0; i < listaServicio.size(); i++) {
+            datos[0] = listaServicio.get(i).getId();
+            datos[1] = listaServicio.get(i).getFecha();
+            datos[2] = listaServicio.get(i).getHora();
+            datos[3] = listaServicio.get(i).getNombre_origen();
+            datos[4] = listaServicio.get(i).getNombre_destino();
+            datos[5] = listaServicio.get(i).getNombre_encomienda();
+            tab.addRow(datos);
+        }
+        tableServicio.setModel(tab);
+     }
     
     public void cargarComboOrigen() {
         comboOrigen.removeAllItems();
@@ -145,6 +163,8 @@ public class Index extends javax.swing.JFrame {
         btnBuscarEncomienda = new javax.swing.JButton();
         comboPresentacionEncomiendas = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tableServicio = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         txtIdServicio = new javax.swing.JSpinner();
@@ -340,15 +360,34 @@ public class Index extends javax.swing.JFrame {
 
         TabbedPane.addTab("Encomiendas", jPanel4);
 
+        tableServicio.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tableServicio);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 474, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         TabbedPane.addTab("ListarServicios", jPanel5);
@@ -720,19 +759,21 @@ public class Index extends javax.swing.JFrame {
 
     private void btnGuardarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarServicioActionPerformed
         // TODO add your handling code here:
-        
         int id = (int) txtIdServicio.getValue(); // Spinner
         String origen = comboOrigen.getSelectedItem().toString();
         String[] partes_origen = origen.split("-");
         int id_origen = Integer.parseInt(partes_origen[0]);
+        String nombre_origen = partes_origen[1];
         
         String destino = comboDestino.getSelectedItem().toString();
-        String[] partes_destino = origen.split("-");
+        String[] partes_destino = destino.split("-");
         int id_destino = Integer.parseInt(partes_destino[0]);
+        String nombre_destino = partes_destino[1];
         
         String encomienda = comboEncomienda.getSelectedItem().toString();
-        String[] partes_encomienda = origen.split("-");
+        String[] partes_encomienda = encomienda.split("-");
         int id_encomienda = Integer.parseInt(partes_encomienda[0]);
+        String nombre_encomienda = partes_encomienda[1];
         
         String fecha = txtFechaServicio.getText();
         String hora = txtHoraServicio.getText();
@@ -741,13 +782,13 @@ public class Index extends javax.swing.JFrame {
                 || fecha.equals("") || hora.equals("")) {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
-            Servicio new_serv = new Servicio(id, id_origen, id_destino, fecha, hora, id_encomienda);
+            Servicio new_serv = new Servicio(id, id_origen, id_destino, fecha, hora, id_encomienda, nombre_origen, nombre_destino, nombre_encomienda);
             int result = modelo_servicio.Create(new_serv);
             new_serv.setId(result);
             listaServicio.add(new_serv);
             JOptionPane.showMessageDialog(this, "Servicio " + fecha + " fue creado correctamente");
-//            cargarListaTablaUsuarios();
-//            limpiarCamposUsuario();
+            cargarListaTablaServicio();
+//            limpiarCamposServicio();
         }
     }//GEN-LAST:event_btnGuardarServicioActionPerformed
 
@@ -830,7 +871,9 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable tableEncomiendas;
+    private javax.swing.JTable tableServicio;
     private javax.swing.JTable tableUsuarios;
     private javax.swing.JTextField txtApellidosUsuario;
     private javax.swing.JTextArea txtDescripcionEncomiendas;

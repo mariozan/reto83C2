@@ -5,8 +5,10 @@
 package Model;
 
 import Class.Servicio;
+import Class.Usuario;
 import Controller.Conn;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -35,6 +37,42 @@ public class ServicioModel {
             System.out.println("Error" + e.getMessage());
         }        
         return 0; // Algo salio mal
+    }
+    
+    
+    public ArrayList<Servicio> Read() {
+        Connection conn = conexion.getConnection();
+        ArrayList<Servicio> lista_servicio = new ArrayList();
+        String query = "SELECT servicio.*, "
+                       + "CONCAT(origen.nombre,' ', origen.apellidos) AS nombre_origen,"
+                       + "CONCAT(destino.nombre,' ', destino.apellidos) AS nombre_destino,"
+                       + "encomienda.descripcion "
+                       + "FROM servicio "
+                       + "INNER JOIN usuario AS origen ON origen.id = servicio.origen "
+                       + "INNER JOIN usuario as destino ON destino.id = servicio.destino "
+                       + "INNER JOIN encomienda ON encomienda.id = servicio.encomienda";
+                       
+        try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            ResultSet resultados = newStatement.executeQuery();
+            while (resultados.next()) {
+                int id = resultados.getInt(1);
+                int origen = resultados.getInt(2);
+                int destino = resultados.getInt(3);
+                String fecha = resultados.getString(4);
+                String hora = resultados.getString(5);  
+                int encomienda = resultados.getInt(6);
+                String nombre_origen = resultados.getString(7);
+                String nombre_destino = resultados.getString(8);
+                String nombre_encomienda = resultados.getString(9);
+                
+                Servicio serv = new Servicio(id, origen, destino, fecha, hora, encomienda, nombre_origen, nombre_destino, nombre_encomienda);
+                lista_servicio.add(serv);
+            }
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return lista_servicio;
     }
     
 }
