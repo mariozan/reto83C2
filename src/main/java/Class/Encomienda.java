@@ -15,6 +15,12 @@ public class Encomienda {
     private int peso;
     private String presentacion;
     private String tipo;
+    private int cantidad;
+
+    public Encomienda(String presentacion, int cantidad) {
+        this.presentacion = presentacion;
+        this.cantidad = cantidad;
+    }   
 
     public Encomienda(int id, String descripcion, int peso, String presentacion, String tipo) {
         this.id = id;
@@ -96,6 +102,20 @@ public class Encomienda {
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    /**
+     * @return the cantidad
+     */
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    /**
+     * @param cantidad the cantidad to set
+     */
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
     
     

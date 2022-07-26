@@ -63,4 +63,26 @@ public class EncomiendaModel {
         return lista_encomienda;
     }
     
+    
+    public ArrayList<Encomienda> GetByPresentacion() {
+        Connection conn = conexion.getConnection();
+        ArrayList<Encomienda> lista_encomienda = new ArrayList();
+        String query = "SELECT presentacion, COUNT(presentacion) AS cantidad "
+                     + "FROM encomienda "
+                     + "GROUP BY presentacion";
+        try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            ResultSet resultados = newStatement.executeQuery();
+            while (resultados.next()) {
+                String presentacion = resultados.getString(1);
+                int cantidad = resultados.getInt(2); 
+                Encomienda en = new Encomienda(presentacion, cantidad);
+                lista_encomienda.add(en);
+            }
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return lista_encomienda;
+    }
+    
 }

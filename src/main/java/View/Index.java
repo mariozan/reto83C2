@@ -11,6 +11,10 @@ import Model.UsuarioModel;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -37,6 +41,20 @@ public class Index extends javax.swing.JFrame {
         cargarComboOrigen();
         cargarComboEncomienda();
         cargarListaTablaServicio();
+    }
+    
+    public void cargarGraficoEncomiendaPie() {
+        ArrayList<Encomienda> lista_encomienda_p = modelo_encomienda.GetByPresentacion();
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        
+        for (Encomienda index : lista_encomienda_p) {
+            dataset.setValue(index.getPresentacion(), index.getCantidad());
+        }
+        JFreeChart chart = ChartFactory.createPieChart("Grafico de Encomiendas por Presentacion", dataset, true, true, true);
+        ChartPanel panel = new ChartPanel(chart);
+        panelEncomienda.setLayout(new java.awt.BorderLayout());
+        panelEncomienda.add(panel);
+        panelEncomienda.validate();
     }
     
     public void cargarListaTablaUsuarios() {
@@ -71,6 +89,7 @@ public class Index extends javax.swing.JFrame {
             tab.addRow(datos);
         }
         tableEncomiendas.setModel(tab);
+        cargarGraficoEncomiendaPie();
         }
     
     public void cargarListaTablaServicio() {
@@ -197,6 +216,7 @@ public class Index extends javax.swing.JFrame {
         btnEliminarUsuario = new javax.swing.JButton();
         btnGuardarUsuario = new javax.swing.JButton();
         txtIdUsuario = new javax.swing.JSpinner();
+        panelEncomienda = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -615,6 +635,19 @@ public class Index extends javax.swing.JFrame {
 
         TabbedPane.addTab("Usuario", jPanel2);
 
+        javax.swing.GroupLayout panelEncomiendaLayout = new javax.swing.GroupLayout(panelEncomienda);
+        panelEncomienda.setLayout(panelEncomiendaLayout);
+        panelEncomiendaLayout.setHorizontalGroup(
+            panelEncomiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 474, Short.MAX_VALUE)
+        );
+        panelEncomiendaLayout.setVerticalGroup(
+            panelEncomiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 455, Short.MAX_VALUE)
+        );
+
+        TabbedPane.addTab("Grafico Encomienda", panelEncomienda);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -634,27 +667,6 @@ public class Index extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarUsuarioActionPerformed
-        // TODO add your handling code here:
-        int id = (int) txtIdUsuario.getValue();
-
-        boolean existe = false;
-        for (int i = 0; i < listaUsuarios.size(); i++) {
-            if (listaUsuarios.get(i).getId() == id) {
-                txtNombreUsuario.setText(listaUsuarios.get(i).getNombre());
-                txtApellidosUsuario.setText(listaUsuarios.get(i).getApellidos());
-                txtDireccionUsuario.setText(listaUsuarios.get(i).getDireccion());
-                txtTelefonoUsuario.setText(listaUsuarios.get(i).getTelefono());
-                existe = true;
-                break;
-            }
-        }
-        if (!existe) {
-            JOptionPane.showMessageDialog(this, "El Usuario no esta registrada");
-        }
-
-    }//GEN-LAST:event_btnBuscarUsuarioActionPerformed
-
     private void btnGuardarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarUsuarioActionPerformed
         // TODO add your handling code here:
         int id = (int) txtIdUsuario.getValue(); // Spinner
@@ -662,9 +674,9 @@ public class Index extends javax.swing.JFrame {
         String apellidos = txtApellidosUsuario.getText();
         String telefono = txtTelefonoUsuario.getText();
         String direccion = txtDireccionUsuario.getText();
-        
-        if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("") 
-                || direccion.equals("")) {
+
+        if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("")
+            || direccion.equals("")) {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
             Usuario new_user = new Usuario(id, nombre, apellidos, direccion, telefono);
@@ -676,40 +688,6 @@ public class Index extends javax.swing.JFrame {
             limpiarCamposUsuario();
         }
     }//GEN-LAST:event_btnGuardarUsuarioActionPerformed
-
-    private void btnEditarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarUsuarioActionPerformed
-        // TODO add your handling code here:
-        int id = (int) txtIdUsuario.getValue(); // Spinner
-        String nombre = txtNombreUsuario.getText(); // TextField
-        String apellidos = txtApellidosUsuario.getText();
-        String telefono = txtTelefonoUsuario.getText();
-        String direccion = txtDireccionUsuario.getText();
-        boolean existe = false;
-
-        if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("") || direccion.equals("")) {
-            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
-        } else {
-            for (int i = 0; i < listaUsuarios.size(); i++) {
-            if (listaUsuarios.get(i).getId() == id) { // Pedro
-                    listaUsuarios.get(i).setNombre(nombre);
-                    listaUsuarios.get(i).setApellidos(apellidos);
-                    listaUsuarios.get(i).setDireccion(direccion);
-                    listaUsuarios.get(i).setTelefono(telefono);
-                    existe = true;
-                    Usuario u = new Usuario(id, nombre, apellidos, direccion, telefono);
-                    modelo_usuario.Update(u, id);
-                    cargarListaTablaUsuarios();
-                    limpiarCamposUsuario();
-                    JOptionPane.showMessageDialog(this, "Usuario editado correctamente");
-                    break;
-                }
-            }
-        }
-        if (!existe) {
-            JOptionPane.showMessageDialog(this, "El Usuario no esta registrado");
-        }        
-
-    }//GEN-LAST:event_btnEditarUsuarioActionPerformed
 
     private void btnEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarUsuarioActionPerformed
         // TODO add your handling code here:
@@ -733,8 +711,95 @@ public class Index extends javax.swing.JFrame {
         if (!existe) {
             JOptionPane.showMessageDialog(this, "El Usuario no esta registrado");
         }
-
     }//GEN-LAST:event_btnEliminarUsuarioActionPerformed
+
+    private void btnEditarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarUsuarioActionPerformed
+        // TODO add your handling code here:
+        int id = (int) txtIdUsuario.getValue(); // Spinner
+        String nombre = txtNombreUsuario.getText(); // TextField
+        String apellidos = txtApellidosUsuario.getText();
+        String telefono = txtTelefonoUsuario.getText();
+        String direccion = txtDireccionUsuario.getText();
+        boolean existe = false;
+
+        if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("") || direccion.equals("")) {
+            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+        } else {
+            for (int i = 0; i < listaUsuarios.size(); i++) {
+                if (listaUsuarios.get(i).getId() == id) { // Pedro
+                    listaUsuarios.get(i).setNombre(nombre);
+                    listaUsuarios.get(i).setApellidos(apellidos);
+                    listaUsuarios.get(i).setDireccion(direccion);
+                    listaUsuarios.get(i).setTelefono(telefono);
+                    existe = true;
+                    Usuario u = new Usuario(id, nombre, apellidos, direccion, telefono);
+                    modelo_usuario.Update(u, id);
+                    cargarListaTablaUsuarios();
+                    limpiarCamposUsuario();
+                    JOptionPane.showMessageDialog(this, "Usuario editado correctamente");
+                    break;
+                }
+            }
+        }
+        if (!existe) {
+            JOptionPane.showMessageDialog(this, "El Usuario no esta registrado");
+        }
+    }//GEN-LAST:event_btnEditarUsuarioActionPerformed
+
+    private void btnBuscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarUsuarioActionPerformed
+        // TODO add your handling code here:
+        int id = (int) txtIdUsuario.getValue();
+
+        boolean existe = false;
+        for (int i = 0; i < listaUsuarios.size(); i++) {
+            if (listaUsuarios.get(i).getId() == id) {
+                txtNombreUsuario.setText(listaUsuarios.get(i).getNombre());
+                txtApellidosUsuario.setText(listaUsuarios.get(i).getApellidos());
+                txtDireccionUsuario.setText(listaUsuarios.get(i).getDireccion());
+                txtTelefonoUsuario.setText(listaUsuarios.get(i).getTelefono());
+                existe = true;
+                break;
+            }
+        }
+        if (!existe) {
+            JOptionPane.showMessageDialog(this, "El Usuario no esta registrada");
+        }
+    }//GEN-LAST:event_btnBuscarUsuarioActionPerformed
+
+    private void btnGuardarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarServicioActionPerformed
+        // TODO add your handling code here:
+        int id = (int) txtIdServicio.getValue(); // Spinner
+        String origen = comboOrigen.getSelectedItem().toString();
+        String[] partes_origen = origen.split("-");
+        int id_origen = Integer.parseInt(partes_origen[0]);
+        String nombre_origen = partes_origen[1];
+
+        String destino = comboDestino.getSelectedItem().toString();
+        String[] partes_destino = destino.split("-");
+        int id_destino = Integer.parseInt(partes_destino[0]);
+        String nombre_destino = partes_destino[1];
+
+        String encomienda = comboEncomienda.getSelectedItem().toString();
+        String[] partes_encomienda = encomienda.split("-");
+        int id_encomienda = Integer.parseInt(partes_encomienda[0]);
+        String nombre_encomienda = partes_encomienda[1];
+
+        String fecha = txtFechaServicio.getText();
+        String hora = txtHoraServicio.getText();
+
+        if (origen.equals("") || destino.equals("") || encomienda.equals("")
+            || fecha.equals("") || hora.equals("")) {
+            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+        } else {
+            Servicio new_serv = new Servicio(id, id_origen, id_destino, fecha, hora, id_encomienda, nombre_origen, nombre_destino, nombre_encomienda);
+            int result = modelo_servicio.Create(new_serv);
+            new_serv.setId(result);
+            listaServicio.add(new_serv);
+            JOptionPane.showMessageDialog(this, "Servicio " + fecha + " fue creado correctamente");
+            cargarListaTablaServicio();
+            //            limpiarCamposServicio();
+        }
+    }//GEN-LAST:event_btnGuardarServicioActionPerformed
 
     private void btnGuadarEncomiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuadarEncomiendaActionPerformed
         // TODO add your handling code here:
@@ -743,7 +808,7 @@ public class Index extends javax.swing.JFrame {
         int peso = (int) txtPesoEncomiendas.getValue();
         String tipo = txtTipoEncomiendas.getText();
         String presentacion = comboPresentacionEncomiendas.getSelectedItem().toString();
-        
+
         if (descripcion.equals("") || peso == 0 || tipo.equals("") || presentacion.equals("")) {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
@@ -756,41 +821,6 @@ public class Index extends javax.swing.JFrame {
             limpiarCamposEncomiendas();
         }
     }//GEN-LAST:event_btnGuadarEncomiendaActionPerformed
-
-    private void btnGuardarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarServicioActionPerformed
-        // TODO add your handling code here:
-        int id = (int) txtIdServicio.getValue(); // Spinner
-        String origen = comboOrigen.getSelectedItem().toString();
-        String[] partes_origen = origen.split("-");
-        int id_origen = Integer.parseInt(partes_origen[0]);
-        String nombre_origen = partes_origen[1];
-        
-        String destino = comboDestino.getSelectedItem().toString();
-        String[] partes_destino = destino.split("-");
-        int id_destino = Integer.parseInt(partes_destino[0]);
-        String nombre_destino = partes_destino[1];
-        
-        String encomienda = comboEncomienda.getSelectedItem().toString();
-        String[] partes_encomienda = encomienda.split("-");
-        int id_encomienda = Integer.parseInt(partes_encomienda[0]);
-        String nombre_encomienda = partes_encomienda[1];
-        
-        String fecha = txtFechaServicio.getText();
-        String hora = txtHoraServicio.getText();
-        
-        if (origen.equals("") || destino.equals("") || encomienda.equals("") 
-                || fecha.equals("") || hora.equals("")) {
-            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
-        } else {
-            Servicio new_serv = new Servicio(id, id_origen, id_destino, fecha, hora, id_encomienda, nombre_origen, nombre_destino, nombre_encomienda);
-            int result = modelo_servicio.Create(new_serv);
-            new_serv.setId(result);
-            listaServicio.add(new_serv);
-            JOptionPane.showMessageDialog(this, "Servicio " + fecha + " fue creado correctamente");
-            cargarListaTablaServicio();
-//            limpiarCamposServicio();
-        }
-    }//GEN-LAST:event_btnGuardarServicioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -872,6 +902,7 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPanel panelEncomienda;
     private javax.swing.JTable tableEncomiendas;
     private javax.swing.JTable tableServicio;
     private javax.swing.JTable tableUsuarios;
