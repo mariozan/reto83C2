@@ -11,9 +11,7 @@ import Model.UsuarioModel;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
+import org.jfree.chart.*;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
@@ -41,6 +39,7 @@ public class Index extends javax.swing.JFrame {
         cargarComboOrigen();
         cargarComboEncomienda();
         cargarListaTablaServicio();
+        cargarGraficoEncomiendaPie();
     }
     
     public void cargarGraficoEncomiendaPie() {
