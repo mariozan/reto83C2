@@ -5,6 +5,7 @@
 package View;
 
 import Class.*;
+import Controller.EncomiendaController;
 import Model.EncomiendaModel;
 import Model.ServicioModel;
 import Model.UsuarioModel;
@@ -164,6 +165,7 @@ public class Index extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableEncomiendas = new javax.swing.JTable();
+        btnExportEncomienda = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -264,6 +266,13 @@ public class Index extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(tableEncomiendas);
 
+        btnExportEncomienda.setText("Expotar");
+        btnExportEncomienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportEncomiendaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -271,13 +280,19 @@ public class Index extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 22, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(196, 196, 196)
+                .addComponent(btnExportEncomienda)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(btnExportEncomienda)
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         TabbedPane.addTab("ListarEncomiendas", jPanel3);
@@ -821,6 +836,17 @@ public class Index extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnGuadarEncomiendaActionPerformed
 
+    private void btnExportEncomiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportEncomiendaActionPerformed
+        // TODO add your handling code here:
+        EncomiendaController controlador_encomienda = new EncomiendaController();
+        try{
+            controlador_encomienda.ExportData();
+            JOptionPane.showMessageDialog(this, "Informacion Exportada Correctamente");
+        }catch(Exception e){
+            System.out.println("Error:"+e.getMessage());
+        }
+    }//GEN-LAST:event_btnExportEncomiendaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -867,6 +893,7 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminarEncomienda;
     private javax.swing.JButton btnEliminarServicio;
     private javax.swing.JButton btnEliminarUsuario;
+    private javax.swing.JButton btnExportEncomienda;
     private javax.swing.JButton btnGuadarEncomienda;
     private javax.swing.JButton btnGuardarServicio;
     private javax.swing.JButton btnGuardarUsuario;
