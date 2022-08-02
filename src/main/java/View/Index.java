@@ -9,10 +9,13 @@ import Controller.EncomiendaController;
 import Model.EncomiendaModel;
 import Model.ServicioModel;
 import Model.UsuarioModel;
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.*;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
@@ -41,6 +44,21 @@ public class Index extends javax.swing.JFrame {
         cargarComboEncomienda();
         cargarListaTablaServicio();
         cargarGraficoEncomiendaPie();
+        cargarGraficoEncomiendaBar();
+    }
+    
+    public void cargarGraficoEncomiendaBar(){
+        ArrayList<Encomienda> lista_encomienda_p = modelo_encomienda.GetByPresentacion();     
+        
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();       
+        for (Encomienda index : lista_encomienda_p) {
+            dataset.setValue(index.getCantidad(), index.getPresentacion(), "Cantidad");
+        }        
+        JFreeChart chart = ChartFactory.createBarChart3D("Grafico de Barras", "Tipo", "", dataset, PlotOrientation.VERTICAL, true, true, true);
+        ChartPanel panel = new ChartPanel(chart);
+        panelBarras.setLayout(new java.awt.BorderLayout());
+        panelBarras.add(panel);
+        panelBarras.validate();
     }
     
     public void cargarGraficoEncomiendaPie() {
@@ -218,6 +236,7 @@ public class Index extends javax.swing.JFrame {
         btnGuardarUsuario = new javax.swing.JButton();
         txtIdUsuario = new javax.swing.JSpinner();
         panelEncomienda = new javax.swing.JPanel();
+        panelBarras = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -278,7 +297,7 @@ public class Index extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 22, Short.MAX_VALUE)
+                .addGap(0, 116, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(196, 196, 196)
@@ -345,7 +364,7 @@ public class Index extends javax.swing.JFrame {
                         .addComponent(btnEditarEncomienda)
                         .addGap(33, 33, 33)
                         .addComponent(btnEliminarEncomienda)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
                         .addComponent(btnBuscarEncomienda)
                         .addGap(30, 30, 30))
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -490,7 +509,7 @@ public class Index extends javax.swing.JFrame {
                             .addComponent(comboEncomienda, 0, 148, Short.MAX_VALUE)
                             .addComponent(txtFechaServicio)
                             .addComponent(txtHoraServicio))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnGuardarServicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEliminarServicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -585,6 +604,8 @@ public class Index extends javax.swing.JFrame {
             }
         });
 
+        txtIdUsuario.setEnabled(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -613,7 +634,7 @@ public class Index extends javax.swing.JFrame {
                     .addComponent(txtIdUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addComponent(btnGuardarUsuario)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(176, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -653,7 +674,7 @@ public class Index extends javax.swing.JFrame {
         panelEncomienda.setLayout(panelEncomiendaLayout);
         panelEncomiendaLayout.setHorizontalGroup(
             panelEncomiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 474, Short.MAX_VALUE)
+            .addGap(0, 568, Short.MAX_VALUE)
         );
         panelEncomiendaLayout.setVerticalGroup(
             panelEncomiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -662,14 +683,27 @@ public class Index extends javax.swing.JFrame {
 
         TabbedPane.addTab("Grafico Encomienda", panelEncomienda);
 
+        javax.swing.GroupLayout panelBarrasLayout = new javax.swing.GroupLayout(panelBarras);
+        panelBarras.setLayout(panelBarrasLayout);
+        panelBarrasLayout.setHorizontalGroup(
+            panelBarrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 568, Short.MAX_VALUE)
+        );
+        panelBarrasLayout.setVerticalGroup(
+            panelBarrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 455, Short.MAX_VALUE)
+        );
+
+        TabbedPane.addTab("GraficoBarras", panelBarras);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addComponent(TabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addComponent(TabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 573, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -689,7 +723,7 @@ public class Index extends javax.swing.JFrame {
         String telefono = txtTelefonoUsuario.getText();
         String direccion = txtDireccionUsuario.getText();
 
-        if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("")
+        if (nombre.equals("") || apellidos.equals("") || telefono.equals("")
             || direccion.equals("")) {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
@@ -730,43 +764,51 @@ public class Index extends javax.swing.JFrame {
     private void btnEditarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarUsuarioActionPerformed
         // TODO add your handling code here:
         int id = (int) txtIdUsuario.getValue(); // Spinner
-        String nombre = txtNombreUsuario.getText(); // TextField
-        String apellidos = txtApellidosUsuario.getText();
-        String telefono = txtTelefonoUsuario.getText();
-        String direccion = txtDireccionUsuario.getText();
-        boolean existe = false;
+        if(id != 0){
+            String nombre = txtNombreUsuario.getText(); // TextField
+            String apellidos = txtApellidosUsuario.getText();
+            String telefono = txtTelefonoUsuario.getText();
+            String direccion = txtDireccionUsuario.getText();
+            boolean existe = false;
 
-        if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("") || direccion.equals("")) {
-            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
-        } else {
-            for (int i = 0; i < listaUsuarios.size(); i++) {
-                if (listaUsuarios.get(i).getId() == id) { // Pedro
-                    listaUsuarios.get(i).setNombre(nombre);
-                    listaUsuarios.get(i).setApellidos(apellidos);
-                    listaUsuarios.get(i).setDireccion(direccion);
-                    listaUsuarios.get(i).setTelefono(telefono);
-                    existe = true;
-                    Usuario u = new Usuario(id, nombre, apellidos, direccion, telefono);
-                    modelo_usuario.Update(u, id);
-                    cargarListaTablaUsuarios();
-                    limpiarCamposUsuario();
-                    JOptionPane.showMessageDialog(this, "Usuario editado correctamente");
-                    break;
+            if (id == 0 || nombre.equals("") || apellidos.equals("") || telefono.equals("") || direccion.equals("")) {
+                JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+            } else {
+                for (int i = 0; i < listaUsuarios.size(); i++) {
+                    if (listaUsuarios.get(i).getId() == id) { // Pedro
+                        listaUsuarios.get(i).setNombre(nombre);
+                        listaUsuarios.get(i).setApellidos(apellidos);
+                        listaUsuarios.get(i).setDireccion(direccion);
+                        listaUsuarios.get(i).setTelefono(telefono);
+                        existe = true;
+                        Usuario u = new Usuario(id, nombre, apellidos, direccion, telefono);
+                        modelo_usuario.Update(u, id);
+                        cargarListaTablaUsuarios();
+                        limpiarCamposUsuario();
+                        JOptionPane.showMessageDialog(this, "Usuario editado correctamente");
+                        break;
+                    }
                 }
             }
-        }
-        if (!existe) {
-            JOptionPane.showMessageDialog(this, "El Usuario no esta registrado");
+            if (!existe) {
+                JOptionPane.showMessageDialog(this, "El Usuario no esta registrado");
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Error: debe buscar un registro");
         }
     }//GEN-LAST:event_btnEditarUsuarioActionPerformed
 
     private void btnBuscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarUsuarioActionPerformed
         // TODO add your handling code here:
-        int id = (int) txtIdUsuario.getValue();
+//        int id = (int) txtIdUsuario.getValue();
+//        txtTelefonoUsuario.requestFocus();
+
+        int id = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID"));
 
         boolean existe = false;
         for (int i = 0; i < listaUsuarios.size(); i++) {
             if (listaUsuarios.get(i).getId() == id) {
+                txtIdUsuario.setValue(listaUsuarios.get(i).getId());
                 txtNombreUsuario.setText(listaUsuarios.get(i).getNombre());
                 txtApellidosUsuario.setText(listaUsuarios.get(i).getApellidos());
                 txtDireccionUsuario.setText(listaUsuarios.get(i).getDireccion());
@@ -928,6 +970,7 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPanel panelBarras;
     private javax.swing.JPanel panelEncomienda;
     private javax.swing.JTable tableEncomiendas;
     private javax.swing.JTable tableServicio;
